@@ -18,7 +18,7 @@ describe("pedido WhatsApp", () => {
   });
   it("preserva acentos após codificação", () => {
     const url = buildWhatsAppUrl(base);
-    expect(decodeURIComponent(url.split("text=")[1])).toContain("Álbum Kizomba");
+    expect(decodeURIComponent(url.split("text=")[1] ?? "")).toContain("Álbum Kizomba");
   });
   it("exige nome e telefone", () => {
     expect(requestSchema.safeParse({ ...base, nome: "" }).success).toBe(false);

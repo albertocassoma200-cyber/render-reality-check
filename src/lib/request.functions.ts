@@ -15,7 +15,7 @@ export const submitRequest = createServerFn({ method: "POST" })
     if (Date.now() - data.startedAt < 4000)
       return { ok: false as const, error: "Preenchimento demasiado rápido. Revê os dados e tenta novamente." };
 
-    const secret = process.env.TURNSTILE_SECRET_KEY;
+    const secret = process.env["TURNSTILE_SECRET_KEY"];
     if (secret) {
       if (!data.token) return { ok: false as const, error: "Conclui a verificação de segurança." };
       const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
