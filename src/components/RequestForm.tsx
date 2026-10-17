@@ -5,7 +5,7 @@ import { SERVICES, requestSchema } from "@/lib/request";
 import { submitRequest } from "@/lib/request.functions";
 import { WhatsAppIcon } from "./site";
 
-const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+const SITE_KEY = import.meta.env["VITE_TURNSTILE_SITE_KEY"] as string | undefined;
 
 declare global {
   interface Window {
@@ -17,7 +17,7 @@ declare global {
 const empty = { nome: "", empresa: "", telefone: "", email: "", servico: "", projeto: "", descricao: "", link: "", data: "", orcamento: "", observacoes: "" };
 type Fields = typeof empty;
 
-function Field({ id, label, req, err, children }: { id: string; label: string; req?: boolean; err?: string; children: React.ReactNode }) {
+function Field({ id, label, req, err, children }: { id: string; label: string; req?: boolean; err?: string | undefined; children: React.ReactNode }) {
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-semibold">
@@ -41,7 +41,7 @@ export function RequestForm({ service }: { service: string }) {
   const [msg, setMsg] = useState<{ type: "error" | "info"; text: string } | null>(null);
   const started = useRef(Date.now());
   const widget = useRef<HTMLDivElement>(null);
-  const widgetId = useRef<string>();
+  const widgetId = useRef<string | undefined>(undefined);
 
   useEffect(() => { if (service) setF((p) => ({ ...p, servico: service })); }, [service]);
 
@@ -106,28 +106,28 @@ export function RequestForm({ service }: { service: string }) {
     <form onSubmit={onSubmit} noValidate className="space-y-8 rounded-3xl bg-card p-6 shadow-card md:p-10">
       <fieldset className="grid gap-5 md:grid-cols-2">
         <legend className="mb-4 font-display text-sm text-primary">A · DADOS DO CLIENTE</legend>
-        <Field err={errors.nome} id="nome" label="Nome completo" req><input id="nome" className={input} value={f.nome} onChange={set("nome")} placeholder="Ex.: João Manuel" autoComplete="name" /></Field>
-        <Field err={errors.empresa} id="empresa" label="Empresa, marca ou projeto"><input id="empresa" className={input} value={f.empresa} onChange={set("empresa")} placeholder="Ex.: Kuia Produções" /></Field>
-        <Field err={errors.telefone} id="telefone" label="Telefone ou WhatsApp" req><input id="telefone" type="tel" className={input} value={f.telefone} onChange={set("telefone")} placeholder="Ex.: +244 923 000 000" autoComplete="tel" /></Field>
-        <Field err={errors.email} id="email" label="E-mail"><input id="email" type="email" className={input} value={f.email} onChange={set("email")} placeholder="Ex.: nome@email.com" autoComplete="email" /></Field>
+        <Field err={errors["nome"]} id="nome" label="Nome completo" req><input id="nome" className={input} value={f.nome} onChange={set("nome")} placeholder="Ex.: João Manuel" autoComplete="name" /></Field>
+        <Field err={errors["empresa"]} id="empresa" label="Empresa, marca ou projeto"><input id="empresa" className={input} value={f.empresa} onChange={set("empresa")} placeholder="Ex.: Kuia Produções" /></Field>
+        <Field err={errors["telefone"]} id="telefone" label="Telefone ou WhatsApp" req><input id="telefone" type="tel" className={input} value={f.telefone} onChange={set("telefone")} placeholder="Ex.: +244 923 000 000" autoComplete="tel" /></Field>
+        <Field err={errors["email"]} id="email" label="E-mail"><input id="email" type="email" className={input} value={f.email} onChange={set("email")} placeholder="Ex.: nome@email.com" autoComplete="email" /></Field>
       </fieldset>
 
       <fieldset className="grid gap-5 md:grid-cols-2">
         <legend className="mb-4 font-display text-sm text-primary">B · SERVIÇO E PEDIDO</legend>
-        <Field err={errors.servico} id="servico" label="Serviço pretendido" req>
+        <Field err={errors["servico"]} id="servico" label="Serviço pretendido" req>
           <select id="servico" className={input} value={f.servico} onChange={set("servico")}>
             <option value="">Seleciona um serviço…</option>
             {SERVICES.map((s) => <option key={s}>{s}</option>)}
           </select>
         </Field>
-        <Field err={errors.projeto} id="projeto" label="Nome do artista, empresa, evento ou produto" req><input id="projeto" className={input} value={f.projeto} onChange={set("projeto")} placeholder="Ex.: Lançamento do single 'Luanda'" /></Field>
+        <Field err={errors["projeto"]} id="projeto" label="Nome do artista, empresa, evento ou produto" req><input id="projeto" className={input} value={f.projeto} onChange={set("projeto")} placeholder="Ex.: Lançamento do single 'Luanda'" /></Field>
         <div className="md:col-span-2">
-          <Field err={errors.descricao} id="descricao" label="Descrição do pedido" req><textarea id="descricao" rows={4} className={input} value={f.descricao} onChange={set("descricao")} placeholder="Explica o que pretendes divulgar, para que público e em que formato." /></Field>
+          <Field err={errors["descricao"]} id="descricao" label="Descrição do pedido" req><textarea id="descricao" rows={4} className={input} value={f.descricao} onChange={set("descricao")} placeholder="Explica o que pretendes divulgar, para que público e em que formato." /></Field>
         </div>
-        <Field err={errors.link} id="link" label="Link do conteúdo ou página"><input id="link" type="url" className={input} value={f.link} onChange={set("link")} placeholder="https://…" /></Field>
-        <Field err={errors.data} id="data" label="Data pretendida"><input id="data" type="date" className={input} value={f.data} onChange={set("data")} /></Field>
-        <Field err={errors.orcamento} id="orcamento" label="Orçamento disponível"><input id="orcamento" className={input} value={f.orcamento} onChange={set("orcamento")} placeholder="Ex.: 25 000 Kz" /></Field>
-        <Field err={errors.observacoes} id="observacoes" label="Observações adicionais"><input id="observacoes" className={input} value={f.observacoes} onChange={set("observacoes")} placeholder="Algo mais que devamos saber?" /></Field>
+        <Field err={errors["link"]} id="link" label="Link do conteúdo ou página"><input id="link" type="url" className={input} value={f.link} onChange={set("link")} placeholder="https://…" /></Field>
+        <Field err={errors["data"]} id="data" label="Data pretendida"><input id="data" type="date" className={input} value={f.data} onChange={set("data")} /></Field>
+        <Field err={errors["orcamento"]} id="orcamento" label="Orçamento disponível"><input id="orcamento" className={input} value={f.orcamento} onChange={set("orcamento")} placeholder="Ex.: 25 000 Kz" /></Field>
+        <Field err={errors["observacoes"]} id="observacoes" label="Observações adicionais"><input id="observacoes" className={input} value={f.observacoes} onChange={set("observacoes")} placeholder="Algo mais que devamos saber?" /></Field>
       </fieldset>
 
       <input type="text" tabIndex={-1} autoComplete="off" value={honey} onChange={(e) => setHoney(e.target.value)} className="hidden" aria-hidden="true" name="website" />
