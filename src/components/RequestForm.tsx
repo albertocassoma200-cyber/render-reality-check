@@ -13,8 +13,9 @@ declare global {
   }
 }
 
-type Fields = Record<string, string>;
-const empty: Fields = { nome: "", empresa: "", telefone: "", email: "", servico: "", projeto: "", descricao: "", link: "", data: "", orcamento: "", observacoes: "" };
+
+const empty = { nome: "", empresa: "", telefone: "", email: "", servico: "", projeto: "", descricao: "", link: "", data: "", orcamento: "", observacoes: "" };
+type Fields = typeof empty;
 
 function Field({ id, label, req, err, children }: { id: string; label: string; req?: boolean; err?: string; children: React.ReactNode }) {
   return (
@@ -60,7 +61,7 @@ export function RequestForm({ service }: { service: string }) {
     document.head.appendChild(s);
   }, []);
 
-  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const set = (k: keyof Fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setF({ ...f, [k]: e.target.value });
     if (errors[k]) setErrors({ ...errors, [k]: "" });
   };
